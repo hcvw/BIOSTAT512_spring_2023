@@ -93,7 +93,7 @@ run;
 %cat(pay1);
 %cat(race);
 
-ods excel close;
+ods html close;
 
 /*output processed dataset to DropBox*/
 data dropbox.cabg_fmt;
