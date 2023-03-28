@@ -54,6 +54,9 @@ format 	hosp_cntrl hosp_cntrl.
 new = input(dshospid, 8.);
    drop dshospid;
    rename new=dshospid;
+/*binary variabe for median LOS*/
+if 2 le los le 8 then los_c=0;
+else los_c=1;
 run;
 
 /*look at data*/
@@ -61,6 +64,7 @@ proc contents data = cabg;
 run;
 
 /*macros for descriptive analytics*/
+/*full dataset*/
 ods html file = "C:\Users\abourdea\Dropbox (University of Michigan)\BIOSTAT512_Final_Project\output\descriptive\descriptive_anlaytics_26MAR2023.html";
 
 /*categorical*/
@@ -94,6 +98,44 @@ run;
 %cat(race);
 
 ods html close;
+
+/*by los*/
+
+ods html file = "C:\Users\abourdea\Dropbox (University of Michigan)\BIOSTAT512_Final_Project\output\descriptive\descriptive_by_los_28MAR2023.html";
+
+/*categorical vars*/
+%macro cat2(var);
+proc freq data = cabg;
+tables &var*los_c/nopercent norow;
+run;
+%mend;
+
+/*numeric vars*/
+%macro num2(var);
+proc means data = cabg;
+var &var;
+class los_c;
+run;
+%mend;
+
+/*hosp level*/
+%cat2(hosp_cntrl);
+%cat2(hosp_teach);
+%num2(hospN);
+%num2(dshospid);
+
+/*patient level*/
+%num2(id);
+%num2(age);
+%cat2(female);
+%num2(los);
+%num2(wcharlsum);
+%cat2(cm_obese);
+%cat2(pay1);
+%cat2(race);
+
+ods html close;
+
 
 /*output processed dataset to DropBox*/
 data dropbox.cabg_fmt;
