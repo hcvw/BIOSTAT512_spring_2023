@@ -55,8 +55,10 @@ new = input(dshospid, 8.);
    drop dshospid;
    rename new=dshospid;
 /*binary variabe for median LOS*/
-if 2 le los le 8 then los_c=0;
-else los_c=1;
+if 2 <= los <= 8 then los_c=0;
+else los_c = 1;
+/*log-transform LOS for later modeling*/
+log_los = log(los);
 run;
 
 /*look at data*/
